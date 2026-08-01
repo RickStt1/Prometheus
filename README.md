@@ -1,4 +1,4 @@
-# StudyFlow (Project Prometheus)
+# Project Prometheus
 
 > Plataforma full-stack para criação e acompanhamento de roadmaps de estudo personalizados com IA.
 
