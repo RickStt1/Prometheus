@@ -1,6 +1,6 @@
 # Project Prometheus
 
-> Plataforma full-stack para criação e acompanhamento de roadmaps de estudo personalizados com IA.
+> Plataforma full-stack para criar e acompanhar roadmaps de estudo personalizados com IA.
 
 ![Python](https://img.shields.io/badge/Python-3.12+-blue)
 ![Node](https://img.shields.io/badge/Node.js-18+-green)
@@ -23,17 +23,17 @@
 - [Segurança](#segurança)
 - [Deploy](#deploy)
 - [Contribuição](#contribuição)
-- [Progresso Do Projeto](#progresso-do-projeto)
+- [Progresso do Projeto](#progresso-do-projeto)
 
 ---
 
 ## Visão geral
 
-O StudyFlow permite que um usuário informe **objetivo**, **tempo disponível** e **nível atual**, e receba um roadmap de estudos estruturado em módulos e tópicos, gerado por IA. O usuário acompanha o progresso marcando itens concluídos e pode configurar notificações por roadmap.
+Você informa **objetivo**, **tempo disponível** e **nível atual** — a IA monta um roadmap estruturado em módulos e tópicos. Dá pra marcar o que foi concluído, acompanhar o progresso em tempo real e configurar notificações por roadmap.
 
 **Stack:**
 
-| Camada         | Tecnologia                              |
+| Camada         | Tecnologia                               |
 |----------------|------------------------------------------|
 | Backend        | FastAPI (Python)                         |
 | Frontend       | React + CRACO + Tailwind CSS             |
@@ -46,12 +46,12 @@ O StudyFlow permite que um usuário informe **objetivo**, **tempo disponível** 
 ## Funcionalidades
 
 - Cadastro e login de usuários
-- Validação de sessão/token e refresh
-- Geração de roadmap de estudos com IA
-- Salvamento, listagem e visualização detalhada de roadmaps
-- Marcação/desmarcação de itens concluídos com recálculo de progresso
-- Configuração de notificações de estudo por roadmap
-- Exclusão de roadmap
+- Validação de sessão/token e refresh automático
+- Geração de roadmap via IA
+- Salvar, listar e visualizar roadmaps
+- Marcar/desmarcar itens com recálculo de progresso
+- Notificações de estudo configuráveis por roadmap
+- Excluir roadmap
 - Painel admin com listagem de usuários
 
 ---
@@ -60,37 +60,35 @@ O StudyFlow permite que um usuário informe **objetivo**, **tempo disponível** 
 
 ### Backend (`backend/`)
 
-| Arquivo                | Responsabilidade                          |
-|-------------------------|-------------------------------------------|
-| `server.py`             | Rotas da API e regras de negócio          |
-| `auth.py`                | Autenticação/validação com Supabase       |
-| `database.py`            | Engine assíncrona SQLAlchemy              |
-| `models.py`               | Modelos: `User`, `Roadmap`, `CompletedItem` |
-| `gemini_service.py`      | Integração com Gemini                     |
-| `alembic/`                | Migrations                                |
+| Arquivo             | Responsabilidade                            |
+|---------------------|---------------------------------------------|
+| `server.py`         | Rotas da API e regras de negócio            |
+| `auth.py`           | Autenticação/validação com Supabase         |
+| `database.py`       | Engine assíncrona SQLAlchemy                |
+| `models.py`         | Modelos: `User`, `Roadmap`, `CompletedItem` |
+| `gemini_service.py` | Integração com Gemini                       |
+| `alembic/`          | Migrations                                  |
 
 ### Frontend (`frontend/src/`)
 
-| Arquivo                          | Responsabilidade                        |
-|-----------------------------------|-------------------------------------------|
-| `App.js`                          | Roteamento e rotas protegidas             |
-| `contexts/AuthContext.js`         | Estado de autenticação e token            |
-| `components/Layout.js`            | Shell principal e navegação               |
-| `pages/Login.js`                  | Login/cadastro                            |
-| `pages/Dashboard.js`              | Lista de roadmaps                         |
-| `pages/RoadmapGenerator.js`       | Geração de roadmap via IA                 |
-| `pages/RoadmapView.js`            | Visualização, progresso e notificações    |
-| `pages/AdminPanel.js`             | Usuários (admin)                          |
+| Arquivo                        | Responsabilidade                         |
+|--------------------------------|------------------------------------------|
+| `App.js`                       | Roteamento e rotas protegidas            |
+| `contexts/AuthContext.js`      | Estado de autenticação e token           |
+| `components/Layout.js`         | Shell principal e navegação              |
+| `pages/Login.js`               | Login/cadastro                           |
+| `pages/Dashboard.js`           | Lista de roadmaps                        |
+| `pages/RoadmapGenerator.js`    | Geração de roadmap via IA                |
+| `pages/RoadmapView.js`         | Visualização, progresso e notificações   |
+| `pages/AdminPanel.js`          | Usuários (admin)                         |
 
-### Fluxo funcional
+### Fluxo
 
-1. Usuário cria conta ou faz login.
-2. Frontend recebe `access_token` e salva em `localStorage`.
-3. Chamadas autenticadas usam header `Authorization: Bearer <token>`.
-4. Usuário gera roadmap via IA.
-5. Estrutura gerada é salva no banco com `total_items` e `progress`.
-6. Ao marcar/desmarcar tópicos, backend recalcula progresso.
-7. Dashboard e tela de roadmap refletem o estado atual.
+1. Usuário cria conta ou faz login → recebe `access_token`, salvo no `localStorage`.
+2. Todas as chamadas autenticadas usam `Authorization: Bearer <token>`.
+3. Usuário gera um roadmap via IA → estrutura salva no banco com `total_items` e `progress`.
+4. Ao marcar/desmarcar tópicos, o backend recalcula o progresso.
+5. Dashboard e tela de roadmap refletem o estado em tempo real.
 
 ---
 
@@ -108,26 +106,20 @@ O StudyFlow permite que um usuário informe **objetivo**, **tempo disponível** 
 
 ### Backend — `backend/.env`
 
-Crie o arquivo com base em `backend/.env.example`:
-
 ```env
 DATABASE_URL=postgresql://USER:PASSWORD@HOST:5432/DB_NAME
 SUPABASE_URL=https://SEU-PROJETO.supabase.co
 SUPABASE_ANON_KEY=SUA_SUPABASE_ANON_KEY
 GEMINI_API_KEY=SUA_GEMINI_API_KEY
 
-# Opcional (controle de admin)
+# Opcional
 ADMIN_EMAIL=admin@dominio.com
-
-# Opcional (CORS)
 # CORS_ORIGINS=http://localhost:3000
 ```
 
-> **Nota:** o `.env.example` mostra `postgresql+asyncpg://...`, mas o código converte `postgresql://` para async automaticamente em runtime. Use `postgresql://` para evitar erros.
+> O `.env.example` usa `postgresql+asyncpg://`, mas o código já faz essa conversão em runtime. Use `postgresql://` mesmo.
 
 ### Frontend — `frontend/.env.local`
-
-Crie com base em `frontend/.env.example`:
 
 ```env
 REACT_APP_BACKEND_URL=http://localhost:8000
@@ -181,32 +173,30 @@ Disponível em `http://localhost:3000`
 
 ### Auth
 
-| Método | Rota                  | Descrição                  |
-|--------|------------------------|------------------------------|
-| POST   | `/api/auth/signup`     | Cria novo usuário            |
-| POST   | `/api/auth/signin`     | Autentica e retorna token    |
-| POST   | `/api/auth/refresh`    | Renova token de acesso       |
-| GET    | `/api/auth/me`         | Retorna usuário autenticado  |
+| Método | Rota                | Descrição                       |
+|--------|---------------------|---------------------------------|
+| POST   | `/api/auth/signup`  | Cria novo usuário               |
+| POST   | `/api/auth/signin`  | Autentica e retorna token       |
+| POST   | `/api/auth/refresh` | Renova token de acesso          |
+| GET    | `/api/auth/me`      | Retorna dados do usuário atual  |
 
 ### Roadmaps
 
-| Método | Rota                                          | Descrição                          |
-|--------|-------------------------------------------------|--------------------------------------|
-| POST   | `/api/roadmaps/generate`                        | Gera estrutura de roadmap via IA     |
-| POST   | `/api/roadmaps`                                 | Salva um roadmap                     |
-| GET    | `/api/roadmaps`                                 | Lista roadmaps do usuário            |
-| GET    | `/api/roadmaps/{roadmap_id}`                    | Detalha um roadmap                   |
-| POST   | `/api/roadmaps/{roadmap_id}/toggle-item`        | Marca/desmarca item concluído        |
-| PUT    | `/api/roadmaps/{roadmap_id}/notifications`      | Atualiza notificações do roadmap     |
-| DELETE | `/api/roadmaps/{roadmap_id}`                    | Remove um roadmap                    |
+| Método | Rota                                       | Descrição                      |
+|--------|--------------------------------------------|--------------------------------|
+| POST   | `/api/roadmaps/generate`                   | Gera estrutura via IA          |
+| POST   | `/api/roadmaps`                            | Salva um roadmap               |
+| GET    | `/api/roadmaps`                            | Lista roadmaps do usuário      |
+| GET    | `/api/roadmaps/{roadmap_id}`               | Detalha um roadmap             |
+| POST   | `/api/roadmaps/{roadmap_id}/toggle-item`   | Marca/desmarca item concluído  |
+| PUT    | `/api/roadmaps/{roadmap_id}/notifications` | Atualiza notificações          |
+| DELETE | `/api/roadmaps/{roadmap_id}`               | Remove um roadmap              |
 
 ### Admin
 
-| Método | Rota                | Descrição                    |
-|--------|-----------------------|--------------------------------|
-| GET    | `/api/admin/users`   | Lista usuários (admin)          |
-
-> Exemplos completos de request/response para cada endpoint estão disponíveis no Swagger (`/docs`) com o servidor rodando localmente.
+| Método | Rota               | Descrição              |
+|--------|--------------------|------------------------|
+| GET    | `/api/admin/users` | Lista usuários (admin) |
 
 ---
 
@@ -222,100 +212,74 @@ Disponível em `http://localhost:3000`
 
 ### `roadmaps`
 
-| Campo                 | Tipo               |
-|------------------------|--------------------|
-| `id`                    | PK                 |
-| `user_id`               | FK → `users`       |
-| `title`, `description`, `goal`, `time_available`, `current_level` | texto |
-| `structure`             | JSON               |
-| `progress`, `total_items` | numérico         |
-| `notification_time`, `notification_enabled` | config |
-| `created_at`, `updated_at` | timestamp       |
+| Campo                                                                     | Tipo             |
+|---------------------------------------------------------------------------|------------------|
+| `id`                                                                      | PK               |
+| `user_id`                                                                 | FK → `users`     |
+| `title`, `description`, `goal`, `time_available`, `current_level`        | texto            |
+| `structure`                                                               | JSON             |
+| `progress`, `total_items`                                                 | numérico         |
+| `notification_time`, `notification_enabled`                               | config           |
+| `created_at`, `updated_at`                                                | timestamp        |
 
 ### `completed_items`
 
-| Campo          | Tipo          |
-|-----------------|---------------|
-| `id`             | PK            |
-| `roadmap_id`     | FK → `roadmaps` |
-| `item_id`        | referência    |
-| `completed_at`   | timestamp     |
+| Campo          | Tipo              |
+|----------------|-------------------|
+| `id`           | PK                |
+| `roadmap_id`   | FK → `roadmaps`   |
+| `item_id`      | referência        |
+| `completed_at` | timestamp         |
 
 ---
 
 ## Testes
 
-Scripts de validação e depuração (principalmente backend/auth):
+Scripts de validação e debug disponíveis na raiz e em `tests_auto/`:
 
-- `validate_all.py`
-- `final_check.py`
-- `debug_auth.py`
-- `debug_signin.py`
-- `generate_token.py`
+- `validate_all.py`, `final_check.py`
+- `debug_auth.py`, `debug_signin.py`, `generate_token.py`
 - `tests_auto/*.py`
 
-> ⚠️ Alguns scripts em `tests_auto/` usam payloads antigos (campos como `topic` e `duration_weeks`) que não refletem os modelos atuais de `POST /api/roadmaps`. Use-os como base de depuração, mas prefira validar pelos endpoints reais no Swagger.
+> Os scripts em `tests_auto/` usam payloads antigos (campos `topic` e `duration_weeks`). Funcionam como ponto de partida pra debug, mas os contratos atuais estão no Swagger.
 
 ---
 
 ## Troubleshooting
 
-**`npm start` falha no frontend**
+**`npm start` falha**
+- Rode `npm install` dentro de `frontend/` antes.
+- Confirme que `frontend/.env.local` está preenchido.
+- Certifique que o backend está no ar em `http://localhost:8000/docs`.
 
-1. Rode `npm install` em `frontend/` antes de `npm start`.
-2. Verifique versão do Node (`node -v`) e npm (`npm -v`).
-3. Confirme `frontend/.env.local` preenchido.
-4. Verifique se o backend está no ar (`http://localhost:8000/docs`).
+**401 nas chamadas**
+- Revise `SUPABASE_URL` e `SUPABASE_ANON_KEY` no `.env` do backend e no `.env.local` do frontend — os dois precisam bater.
+- Faça login novamente para gerar um token fresco, ou use `POST /api/auth/refresh`.
 
-**Erro de autenticação (401)**
-
-- Confirme `SUPABASE_URL` e `SUPABASE_ANON_KEY` no backend e frontend.
-- Gere novo login para renovar o token.
-- Se necessário, teste o fluxo com `POST /api/auth/refresh`.
-
-**Erro de geração de roadmap**
-
-- Verifique `GEMINI_API_KEY` no backend.
-- Confira logs do backend para resposta inválida do modelo.
+**Geração de roadmap falhando**
+- Verifique `GEMINI_API_KEY` no `.env` do backend.
+- Olhe os logs do uvicorn — normalmente a resposta inválida do modelo aparece lá.
 
 ---
 
 ## Segurança
 
-- **Nunca** commitar `.env`, tokens, chaves e senhas.
-- Scripts locais de debug com tokens hardcoded são material de desenvolvimento — remova/rotacione credenciais antes de qualquer uso em ambiente real.
-- Defina `CORS_ORIGINS` explicitamente em produção (evite `*`).
+- Nunca commite `.env`, tokens ou chaves de API.
+- Scripts de debug com credenciais hardcoded são pra uso local — rotacione antes de subir qualquer coisa em ambiente real.
+- Em produção, defina `CORS_ORIGINS` explicitamente no lugar de `*`.
 
 ---
 
 ## Deploy
 
-1. Provisionar banco PostgreSQL e aplicar migrations (`alembic upgrade head`).
-2. Configurar variáveis de ambiente no provider de hospedagem.
-3. Servir o backend via ASGI (`uvicorn`/`gunicorn` com worker adequado).
-4. Compilar o frontend (`npm run build`) e hospedar (Nginx/Vercel/etc.).
-5. Restringir CORS ao domínio do frontend em produção.
+1. Provisionar banco PostgreSQL e rodar `alembic upgrade head`.
+2. Configurar variáveis de ambiente no provider.
+3. Subir o backend via ASGI (`uvicorn` ou `gunicorn` com worker async).
+4. Build do frontend com `npm run build` e hospedar (Nginx, Vercel, etc.).
+5. Restringir `CORS_ORIGINS` ao domínio do frontend.
 
 ---
 
 ## Contribuição
 
-1. Crie uma branch: `feature/minha-feature`
-2. Faça mudanças pequenas e focadas
-3. Atualize este README quando alterar fluxo ou comandos
-4. Abra um PR com descrição objetiva: o que mudou, por quê, como validar
-
----
-
-## Progresso do Projeto
-- [x] Criar roadmaps com feedback visual para progresso.
-- [x] Criar "meu perfil" com foto, descrição e espaço para futuros badges
-- [ ] Adicionar diagramas (arquitetura, fluxo de auth, ciclo de roadmap)
-- [ ] Exemplos de request/response por endpoint crítico direto no README
-- [ ] Política de versionamento semântico / changelog
-- [ ] Seção de observabilidade (logs, métricas, health-check)
-- [ ] Processo de deploy detalhado por ambiente (dev/staging/prod)
-
----
-
-**Status atual:** projeto funcional em desenvolvimento ativo, com backend e frontend separados, autenticação integrada ao Supabase e geração de roadmap via Gemini.
+Branch nova pra cada coisa (`feature/`,
